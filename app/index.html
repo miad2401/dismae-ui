@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>Dismae</title>
+  </head>
+  <body>
+    <div id="app">
+      <button v-on:click="addProjectDialog()">Add Game</button>
+      <ul class="projects">
+        <li v-for="project in projects">
+          {{ project }} - <button v-on:click="startProject(project)">Start</button>
+        </li>
+      </ul>
+    </div>
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

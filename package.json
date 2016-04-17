@@ -1,0 +1,33 @@
+{
+  "name": "dismae-ui",
+  "version": "0.0.1",
+  "description": "User interface to help with dismae game development.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dischan/dismae-ui.git"
+  },
+  "author": "Dischan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dischan/dismae-ui/issues"
+  },
+  "homepage": "https://github.com/Dischan/dismae-ui#readme",
+  "dependencies": {
+    "electron-prebuilt": "^0.37.5"
+  },
+  "build": {
+    "app-bundle-id": "your.id",
+    "app-category-type": "your.app.category.type",
+    "iconUrl": "(windows only)"
+  },
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "pack": "build",
+    "dist": "build",
+    "app": "electron app"
+  }
+}
