@@ -7,7 +7,8 @@
     "postinstall": "install-app-deps",
     "pack": "build",
     "dist": "build",
-    "app": "electron app"
+    "app": "electron app",
+    "build-all": "./node_modules/.bin/build --platform all --arch all"
   },
   "repository": {
     "type": "git",
