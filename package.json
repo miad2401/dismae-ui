@@ -8,7 +8,7 @@
     "pack": "build",
     "dist": "build",
     "app": "electron app",
-    "build-all": "./node_modules/.bin/build --platform all --arch all"
+    "build-all": "./node_modules/.bin/build --platform all --arch all --dist"
   },
   "repository": {
     "type": "git",
