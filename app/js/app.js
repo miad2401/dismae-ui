@@ -1,7 +1,7 @@
 var process = require('process');
 var ipc = require('electron').ipcRenderer;
 const dialog = require('electron').remote.dialog;
-var dismae = require('/Users/jeremy/Git/dismae');
+var dismae = require('dismae');
 
 var app = new Vue({
   el: '#app',

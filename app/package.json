@@ -3,6 +3,7 @@
   "version" : "0.0.1",
   "main"    : "main.js",
   "dependencies": {
-    "vue": "^1.0.21"
+    "vue": "^1.0.21",
+    "dismae": "^0.0.2"
   }
 }
