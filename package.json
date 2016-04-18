@@ -24,8 +24,7 @@
     "electron-prebuilt": "^0.37.5"
   },
   "build": {
-    "app-bundle-id": "your.id",
-    "app-category-type": "your.app.category.type",
-    "iconUrl": "(windows only)"
+    "app-bundle-id": "dischan.dismae-ui",
+    "app-category-type": "public.app-category.developer-tools"
   }
 }
