@@ -3,7 +3,6 @@ var app = require('app');
 var BrowserWindow = require('browser-window');
 var ipc = require("electron").ipcMain;
 var fs = require("fs");
-if (require('electron-squirrel-startup')) return;
 
 var handleStartupEvent = function() {
   if (process.platform !== 'win32') {
