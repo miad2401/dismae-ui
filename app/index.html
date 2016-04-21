@@ -7,7 +7,7 @@
       <button v-on:click="addProjectDialog()">Add Game</button>
       <ul class="projects">
         <li v-for="project in projects">
-          {{ project }} - <button v-on:click="startProject(project)">Start</button>
+          {{ project }} - <button v-on:click="startProject(project)">Start</button> <button v-on:click="removeProject($index)">Remove</button>
         </li>
       </ul>
     </div>
