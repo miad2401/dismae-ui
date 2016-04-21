@@ -3,6 +3,9 @@ var ipc = require('electron').ipcRenderer;
 const dialog = require('electron').remote.dialog;
 var dismae = require('dismae');
 var config;
+var fs = require("fs");
+var path = require('path');
+var Download = require('download');
 
 var app = new Vue({
   el: '#app',
@@ -20,6 +23,39 @@ var app = new Vue({
         this.projects = config.projects;
 
         ipc.send('update-config', config);
+      }
+    },
+    createProject: function createProject(paths) {
+      var _this = this;
+      if(paths){
+        fs.readdir(paths[0], function(err, files){
+          if(err){
+            console.log(err);
+            //throw error
+          } else {
+            function isHiddenFile(file) {
+              return !file.startsWith('.');
+            }
+            var nonHiddenFiles = files.filter(isHiddenFile);
+            if(nonHiddenFiles.length > 0) {
+              console.log(files);
+              //throw error (must be empty directory)
+            } else {
+              _this.status = 'Downloading and extracting base project...';
+              var zipPath = path.join(paths[0], 'base.zip');
+              new Download({mode: '755', extract: true, strip: 1})
+              .get('https://github.com/Dischan/dismae-base/archive/master.zip')
+              .dest(paths[0])
+              .run(function(){
+                config.projects.push(paths[0]);
+                this.projects = config.projects;
+
+                ipc.send('update-config', config);
+                _this.status = null;
+              });
+            }
+          }
+        })
       }
     },
     removeProject: function removeProject(index) {
@@ -65,6 +101,14 @@ var app = new Vue({
           properties: ['openDirectory', 'createDirectory']
         },
         this.addProject
+      );
+    },
+    createProjectDialog: function createProjectDialog() {
+      dialog.showOpenDialog({
+          title: 'Choose Project Directory',
+          properties: ['openDirectory', 'createDirectory']
+        },
+        this.createProject
       );
     }
   }
