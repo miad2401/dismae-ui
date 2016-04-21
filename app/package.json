@@ -6,6 +6,6 @@
   "author"  : "Dischan <dischancontact@gmail.com>",
   "dependencies": {
     "vue": "^1.0.21",
-    "dismae": "^0.0.6"
+    "dismae": "https://github.com/Dischan/dismae.git"
   }
 }
