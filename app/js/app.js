@@ -118,3 +118,7 @@ ipc.on('config-loaded', function(event, conf) {
   config = conf;
   app.updateProjectList(config.projects);
 });
+
+ipc.on('updater', function(event, msg) {
+  console.log(msg);
+});

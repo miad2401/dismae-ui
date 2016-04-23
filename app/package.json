@@ -5,7 +5,7 @@
   "description": "User interface to help with dismae game development.",
   "author": "Dischan <dischancontact@gmail.com>",
   "dependencies": {
-    "dismae": "https://github.com/Dischan/dismae.git",
+    "dismae": "^0.0.7",
     "download": "^4.4.3",
     "electron-squirrel-startup": "^0.1.4",
     "vue": "^1.0.21"

@@ -1,5 +1,6 @@
 if (require('electron-squirrel-startup')) return;
 var electron = require('electron');
+var autoUpdater = require('electron').autoUpdater;
 var app = require('app');
 var BrowserWindow = require('browser-window');
 var ipc = require("electron").ipcMain;
@@ -7,6 +8,41 @@ var fs = require("fs");
 var config = {projects: []};
 var userData = app.getPath("userData");
 var configFile = app.getPath("userData") + '/config.json';
+var os = require("os");
+
+const UPDATE_SERVER_HOST = "https://dismae-update-server.herokuapp.com/"
+
+function checkUpdates() {
+  if (os.platform() === "linux") {
+    return;
+  }
+
+  const version = app.getVersion();
+  autoUpdater.addListener("update-available", function (event) {
+    mainWindow.webContents.send('updater', "A new update is available");
+    console.log("A new update is available")
+  })
+  autoUpdater.addListener("update-downloaded", function (event, releaseNotes, releaseName, releaseDate, updateURL) {
+    mainWindow.webContents.send('updater', "A new update is ready to install" + `Version ${releaseName} is downloaded and will be automatically installed on Quit`);
+    console.log("A new update is ready to install", `Version ${releaseName} is downloaded and will be automatically installed on Quit`)
+  })
+  autoUpdater.addListener("error", function (error) {
+    mainWindow.webContents.send('updater', JSON.stringify(error));
+    console.log(error)
+  })
+  autoUpdater.addListener("checking-for-update", function (event) {
+    mainWindow.webContents.send('updater', "checking-for-update");
+    console.log("checking-for-update")
+  })
+  autoUpdater.addListener("update-not-available", function () {
+    mainWindow.webContents.send('updater', "update-not-available");
+    console.log("update-not-available")
+  })
+  mainWindow.webContents.send('updater', "setting feed url");
+  autoUpdater.setFeedURL(`https://${UPDATE_SERVER_HOST}/update/${os.platform()}_${os.arch()}/${version}`)
+  autoUpdater.checkForUpdates()
+}
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -41,7 +77,7 @@ app.on('ready', function() {
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   mainWindow.focus();
 
@@ -58,6 +94,7 @@ app.on('ready', function() {
 
   mainWindow.webContents.on('did-finish-load', function() {
     mainWindow.webContents.send('config-loaded', config);
+    checkUpdates(mainWindow);
   });
 
   // Emitted when the window is closed.
