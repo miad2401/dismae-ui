@@ -1,3 +1,4 @@
+if (require('electron-squirrel-startup')) return;
 var electron = require('electron');
 var app = require('app');
 var BrowserWindow = require('browser-window');
@@ -34,7 +35,7 @@ app.on('ready', function() {
   windowSize.height = 576;
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: windowSize.width, height: windowSize.height, x:0, y:0, resizable: true, useContentSize: true});
+  mainWindow = new BrowserWindow({title: 'Dismae', width: windowSize.width, height: windowSize.height, x:0, y:0, resizable: true, useContentSize: true});
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html');

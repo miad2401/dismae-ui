@@ -7,6 +7,7 @@
   "dependencies": {
     "dismae": "https://github.com/Dischan/dismae.git",
     "download": "^4.4.3",
+    "electron-squirrel-startup": "^0.1.4",
     "vue": "^1.0.21"
   }
 }
