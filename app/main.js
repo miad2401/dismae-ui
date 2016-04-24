@@ -13,11 +13,18 @@ var os = require("os");
 const UPDATE_SERVER_HOST = "dismae-update-server.herokuapp.com"
 
 function checkUpdates() {
-  if (os.platform() === "linux") {
+  var platform = os.platform();
+  var url;
+  const version = app.getVersion();
+
+  if (platform === "linux") {
     return;
+  } else if (platform === "darwin") {
+    url = `https://${UPDATE_SERVER_HOST}/update/darwin_x64/${version}`
+  } else if (platform === "win32") {
+    url = `https://${UPDATE_SERVER_HOST}/update/win32/${version}`
   }
 
-  const version = app.getVersion();
   autoUpdater.addListener("update-available", function (event) {
     mainWindow.webContents.send('updater', "A new update is available");
     console.log("A new update is available")
@@ -38,8 +45,8 @@ function checkUpdates() {
     mainWindow.webContents.send('updater', "update-not-available");
     console.log("update-not-available")
   })
-  mainWindow.webContents.send('updater', "setting feed url to: " + `https://${UPDATE_SERVER_HOST}/update/${os.platform()}_${os.arch()}/${version}`);
-  autoUpdater.setFeedURL(`https://${UPDATE_SERVER_HOST}/update/${os.platform()}_${os.arch()}/${version}`)
+  mainWindow.webContents.send('updater', "setting feed url to: " + url);
+  autoUpdater.setFeedURL(url)
   autoUpdater.checkForUpdates()
 }
 
