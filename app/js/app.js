@@ -11,11 +11,16 @@ var app = new Vue({
   el: '#app',
   data: {
     projects: [],
-    status: null
+    status: null,
+    uiVersion: null
   },
   methods: {
     updateProjectList: function updateProjectList(projects) {
       this.projects = projects;
+    },
+    updateUIVersion: function updateUIVersion(uiVersion) {
+      console.log(uiVersion);
+      this.uiVersion = uiVersion;
     },
     addProject: function addProject(paths) {
       if(paths){
@@ -117,6 +122,7 @@ var app = new Vue({
 ipc.on('config-loaded', function(event, conf) {
   config = conf;
   app.updateProjectList(config.projects);
+  app.updateUIVersion(config.uiVersion);
 });
 
 ipc.on('updater', function(event, msg) {

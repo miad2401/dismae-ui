@@ -10,7 +10,7 @@ var userData = app.getPath("userData");
 var configFile = app.getPath("userData") + '/config.json';
 var os = require("os");
 
-const UPDATE_SERVER_HOST = "https://dismae-update-server.herokuapp.com/"
+const UPDATE_SERVER_HOST = "dismae-update-server.herokuapp.com"
 
 function checkUpdates() {
   if (os.platform() === "linux") {
@@ -26,9 +26,9 @@ function checkUpdates() {
     mainWindow.webContents.send('updater', "A new update is ready to install" + `Version ${releaseName} is downloaded and will be automatically installed on Quit`);
     console.log("A new update is ready to install", `Version ${releaseName} is downloaded and will be automatically installed on Quit`)
   })
-  autoUpdater.addListener("error", function (error) {
-    mainWindow.webContents.send('updater', JSON.stringify(error));
-    console.log(error)
+  autoUpdater.addListener("error", function (event, message) {
+    mainWindow.webContents.send('updater', message);
+    console.log(message)
   })
   autoUpdater.addListener("checking-for-update", function (event) {
     mainWindow.webContents.send('updater', "checking-for-update");
@@ -38,7 +38,7 @@ function checkUpdates() {
     mainWindow.webContents.send('updater', "update-not-available");
     console.log("update-not-available")
   })
-  mainWindow.webContents.send('updater', "setting feed url");
+  mainWindow.webContents.send('updater', "setting feed url to: " + `https://${UPDATE_SERVER_HOST}/update/${os.platform()}_${os.arch()}/${version}`);
   autoUpdater.setFeedURL(`https://${UPDATE_SERVER_HOST}/update/${os.platform()}_${os.arch()}/${version}`)
   autoUpdater.checkForUpdates()
 }
@@ -71,7 +71,7 @@ app.on('ready', function() {
   windowSize.height = 576;
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({title: 'Dismae', width: windowSize.width, height: windowSize.height, x:0, y:0, resizable: true, useContentSize: true});
+  mainWindow = new BrowserWindow({title: 'Dismae ' + app.getVersion(), width: windowSize.width, height: windowSize.height, x:0, y:0, resizable: true, useContentSize: true});
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html');
@@ -93,6 +93,7 @@ app.on('ready', function() {
   } catch (e) {}
 
   mainWindow.webContents.on('did-finish-load', function() {
+    config.uiVersion = app.getVersion();
     mainWindow.webContents.send('config-loaded', config);
     checkUpdates(mainWindow);
   });
