@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "install-app-deps",
+    "lint": "standard --verbose",
     "pack": "build",
     "dist": "build",
     "app": "electron app",
