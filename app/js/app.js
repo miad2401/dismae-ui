@@ -17,7 +17,6 @@ var app = new window.Vue({
       this.projects = projects
     },
     updateUIVersion: function updateUIVersion (uiVersion) {
-      console.log(uiVersion)
       this.uiVersion = uiVersion
     },
     addProject: function addProject (paths) {
@@ -47,7 +46,7 @@ var app = new window.Vue({
             } else {
               _this.status = 'Downloading and extracting base project...'
               new Download({mode: '755', extract: true, strip: 1})
-                .get('https://github.com/Dischan/dismae-base/archive/master.zip')
+                .get('https://github.com/Dischan/dismae-base/archive/0.0.1.zip')
                 .dest(paths[0])
                 .run(function () {
                   config.projects.push(paths[0])
