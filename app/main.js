@@ -35,7 +35,7 @@ function checkUpdates () {
     console.log('A new update is ready to install', `Version ${releaseName} is downloaded and will be automatically installed on Quit`)
   })
   autoUpdater.addListener('error', function (event, message) {
-    // mainWindow.webContents.send('updater', message)
+    mainWindow.webContents.send('updater', 'Up to Date')
     console.log(message)
   })
   autoUpdater.addListener('checking-for-update', function (event) {
