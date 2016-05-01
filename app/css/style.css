@@ -30,4 +30,6 @@ html {
 .dismae {
   float: right;
   display: inline-block;
+  width: 300px;
+  text-align: right;
 }

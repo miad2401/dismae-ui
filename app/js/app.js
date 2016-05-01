@@ -11,7 +11,8 @@ var app = new window.Vue({
     projects: [],
     status: null,
     uiVersion: null,
-    create: false
+    create: false,
+    updateMessage: null
   },
   methods: {
     updateProjectList: function updateProjectList (projects) {
@@ -19,6 +20,9 @@ var app = new window.Vue({
     },
     updateUIVersion: function updateUIVersion (uiVersion) {
       this.uiVersion = uiVersion
+    },
+    setUpdaterMessage: function setUpdaterMessage (message) {
+      this.updateMessage = message
     },
     addProject: function addProject (paths) {
       if (paths) {
@@ -131,5 +135,5 @@ ipc.on('config-loaded', function (event, conf) {
 })
 
 ipc.on('updater', function (event, msg) {
-  console.log(msg)
+  app.setUpdaterMessage(msg)
 })

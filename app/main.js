@@ -27,23 +27,23 @@ function checkUpdates () {
   }
 
   autoUpdater.addListener('update-available', function (event) {
-    mainWindow.webContents.send('updater', 'A new update is available')
+    mainWindow.webContents.send('updater', 'A new update is available. It will be downloaded in the background.')
     console.log('A new update is available')
   })
   autoUpdater.addListener('update-downloaded', function (event, releaseNotes, releaseName, releaseDate, updateURL) {
-    mainWindow.webContents.send('updater', 'A new update is ready to install' + `Version ${releaseName} is downloaded and will be automatically installed on Quit`)
+    mainWindow.webContents.send('updater', 'Dismae ' + `version ${releaseName} is downloaded and will be automatically installed on quit`)
     console.log('A new update is ready to install', `Version ${releaseName} is downloaded and will be automatically installed on Quit`)
   })
   autoUpdater.addListener('error', function (event, message) {
-    mainWindow.webContents.send('updater', message)
+    // mainWindow.webContents.send('updater', message)
     console.log(message)
   })
   autoUpdater.addListener('checking-for-update', function (event) {
-    mainWindow.webContents.send('updater', 'checking-for-update')
+    mainWindow.webContents.send('updater', 'Checking for update...')
     console.log('checking-for-update')
   })
   autoUpdater.addListener('update-not-available', function () {
-    mainWindow.webContents.send('updater', 'update-not-available')
+    mainWindow.webContents.send('updater', 'Up to Date')
     console.log('update-not-available')
   })
   mainWindow.webContents.send('updater', 'setting feed url to: ' + url)
