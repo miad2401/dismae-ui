@@ -2,21 +2,34 @@
   <head>
     <title>Dismae</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+      [v-cloak] { display: none; }
+    </style>
   </head>
   <body>
-    <div id="app">
-      <div v-if="status">
-        <div class="status">{{status}}</div>
-      </div>
-      <div v-else>
-        UI Version: {{uiVersion}}
-        <br>
-        <button v-on:click="createProjectDialog()">Create New Project</button> <button v-on:click="addProjectDialog()">Add Existing Project</button>
-        <ul class="projects">
-          <li v-for="project in projects">
-            {{ project }} - <button v-on:click="startProject(project)">Start</button> <button v-on:click="removeProject($index)">Remove</button>
-          </li>
-        </ul>
+    <div id="app" v-cloak>
+      <div>
+        <div class = "dismae">Dismae UI Version {{uiVersion}}</div>
+        <div v-if="status" transition="switch">
+          <div class="status">{{status}}</div>
+        </div>
+        <div v-if="create" transition="switch">
+          <h3>Create New Project</h3>
+          <p>
+            Please select an <strong>empty</strong> folder for your new project.
+            Make sure that it's empty, as otherwise the base project will not be downloaded.
+          </p>
+          <button v-on:click="createProjectDialog()">Choose Project Folder</button> <button v-on:click="cancelCreate()">Return to Project List</button>
+        </div>
+        <div v-if="!create && !status" transition="switch">
+          <h3>Current Projects</h3>
+          <ul class="projects">
+            <li v-for="project in projects">
+              {{ project }} - <button v-on:click="startProject(project)">Start</button> <button v-on:click="removeProject($index)">Remove</button>
+            </li>
+            <li><button v-on:click="createNew()">Create New</button> or <button v-on:click="addProjectDialog()">Add Existing</button></li>
+          </ul>
+        </div>
       </div>
     </div>
     <script src="node_modules/vue/dist/vue.js"></script>

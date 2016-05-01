@@ -76,13 +76,22 @@ app.on('ready', function () {
   windowSize.height = 576
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({title: 'Dismae ' + app.getVersion(), width: windowSize.width, height: windowSize.height, x: 0, y: 0, resizable: true, useContentSize: true})
+  mainWindow = new BrowserWindow({
+    title: 'Dismae ' + app.getVersion(),
+    width: windowSize.width,
+    height: windowSize.height,
+    x: 0,
+    y: 0,
+    resizable: true,
+    useContentSize: true,
+    show: false
+  })
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html')  // eslint-disable-line no-path-concat
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   mainWindow.focus()
 
@@ -98,6 +107,7 @@ app.on('ready', function () {
   } catch (e) {}
 
   mainWindow.webContents.on('did-finish-load', function () {
+    mainWindow.show()
     config.uiVersion = app.getVersion()
     mainWindow.webContents.send('config-loaded', config)
     checkUpdates(mainWindow)

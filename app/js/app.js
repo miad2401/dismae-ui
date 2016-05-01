@@ -10,7 +10,8 @@ var app = new window.Vue({
   data: {
     projects: [],
     status: null,
-    uiVersion: null
+    uiVersion: null,
+    create: false
   },
   methods: {
     updateProjectList: function updateProjectList (projects) {
@@ -45,12 +46,13 @@ var app = new window.Vue({
             // throw error (must be empty directory)
             } else {
               _this.status = 'Downloading and extracting base project...'
+              _this.create = false
               new Download({mode: '755', extract: true, strip: 1})
                 .get('https://github.com/Dischan/dismae-base/archive/0.0.1.zip')
                 .dest(paths[0])
                 .run(function () {
                   config.projects.push(paths[0])
-                  this.projects = config.projects
+                  _this.projects = config.projects
 
                   ipc.send('update-config', config)
                   _this.status = null
@@ -59,6 +61,12 @@ var app = new window.Vue({
           }
         })
       }
+    },
+    createNew: function createNew () {
+      this.create = true
+    },
+    cancelCreate: function cancelCreate () {
+      this.create = false
     },
     removeProject: function removeProject (index) {
       config.projects.splice(index, 1)
@@ -88,7 +96,7 @@ var app = new window.Vue({
             _this.status = 'Building...'
             break
           case 'starting':
-            _this.status = 'Starting'
+            _this.status = 'Starting...'
             break
           case 'closed':
             _this.status = null
