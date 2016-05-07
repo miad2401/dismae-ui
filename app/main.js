@@ -1,7 +1,8 @@
-var app = require('app')
 if (require('electron-squirrel-startup')) {
-  app.quit()
+  return
 }
+
+var app = require('app')
 var autoUpdater = require('electron').autoUpdater
 var BrowserWindow = require('browser-window')
 var ipc = require('electron').ipcMain
