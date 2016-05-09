@@ -1,6 +1,6 @@
 {
   "name": "dismae-ui",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "main": "main.js",
   "description": "User interface to help with dismae game development.",
   "author": "Dischan <dischancontact@gmail.com>",
