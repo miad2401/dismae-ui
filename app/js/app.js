@@ -79,9 +79,8 @@ var app = new window.Vue({
     },
     startProject: function startProject (path) {
       var _this = this
-      var config = require(path + '/config')
-      config.gameDir = path
-      var game = new Dismae(config)
+      var config = require(path + '/config.json')
+      var game = new Dismae(config, path)
       game.on('update', (event) => {
         switch (event) {
           case 'checking dependencies':
