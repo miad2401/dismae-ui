@@ -79,6 +79,7 @@ var app = new window.Vue({
     },
     startProject: function startProject (path) {
       var _this = this
+      delete require.cache[require.resolve(path + '/config.json')]
       var config = require(path + '/config.json')
       var game = new Dismae(config, path)
       game.on('update', (event) => {
