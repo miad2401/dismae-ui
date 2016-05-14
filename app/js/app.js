@@ -1,5 +1,7 @@
-var ipc = require('electron').ipcRenderer
-const dialog = require('electron').remote.dialog
+const electron = require('electron')
+
+var ipc = electron.ipcRenderer
+const dialog = electron.remote.dialog
 var Dismae = require('dismae')
 var config
 var fs = require('fs')
