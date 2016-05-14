@@ -52,7 +52,7 @@ var app = new window.Vue({
               _this.status = 'Downloading and extracting base project...'
               _this.create = false
               new Download({mode: '755', extract: true, strip: 1})
-                .get('https://github.com/Dischan/dismae-base/archive/0.0.3.zip')
+                .get('https://github.com/Dischan/dismae-base/archive/0.0.4.zip')
                 .dest(paths[0])
                 .run(function () {
                   config.projects.push(paths[0])
