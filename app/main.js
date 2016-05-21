@@ -59,11 +59,11 @@ function checkUpdates () {
   }
 
   autoUpdater.addListener('update-available', function (event) {
-    mainWindow.webContents.send('updater', 'A new update is available. It will be downloaded in the background.')
+    mainWindow.webContents.send('updater', 'Downloading update...')
     console.log('A new update is available')
   })
   autoUpdater.addListener('update-downloaded', function (event, releaseNotes, releaseName, releaseDate, updateURL) {
-    mainWindow.webContents.send('updater', 'Dismae ' + `version ${releaseName} is downloaded and will be automatically installed on quit`)
+    mainWindow.webContents.send('updater', 'An update has been downloaded and will be installed on quit.')
     console.log('A new update is ready to install', `Version ${releaseName} is downloaded and will be automatically installed on Quit`)
   })
   autoUpdater.addListener('error', function (event, message) {
@@ -104,7 +104,7 @@ app.on('ready', function () {
   // get screen info
   var windowSize = {}
 
-  windowSize.width = 1024
+  windowSize.width = 1100
   windowSize.height = 576
 
   // Create the browser window.
@@ -112,6 +112,8 @@ app.on('ready', function () {
     title: 'Dismae ' + app.getVersion(),
     width: windowSize.width,
     height: windowSize.height,
+    minWidth: 720,
+    minHeight: 400,
     x: 0,
     y: 0,
     resizable: true,

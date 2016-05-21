@@ -1,37 +1,91 @@
 <html>
   <head>
     <title>Dismae</title>
+    <link rel="stylesheet" href="node_modules/material-design-lite/material.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
       [v-cloak] { display: none; }
     </style>
   </head>
   <body>
-    <div id="app" v-cloak>
-      <div>
-        <div class = "dismae">Dismae UI Version {{uiVersion}}<br>{{updateMessage}}</div>
-        <div v-if="status" transition="switch">
-          <div class="status">{{status}}</div>
-        </div>
-        <div v-if="create" transition="switch">
-          <h3>Create New Project</h3>
-          <p>
-            Please select an <strong>empty</strong> folder for your new project.
-            Make sure that it's empty, as otherwise the base project will not be downloaded.
-          </p>
-          <button v-on:click="createProjectDialog()">Choose Project Folder</button> <button v-on:click="cancelCreate()">Return to Project List</button>
-        </div>
-        <div v-if="!create && !status" transition="switch">
-          <h3>Current Projects</h3>
-          <ul class="projects">
-            <li v-for="project in projects">
-              {{ project }} - <button v-on:click="startProject(project)">Start</button> <button v-on:click="removeProject($index)">Remove</button>
-            </li>
-            <li><button v-on:click="createNew()">Create New</button> or <button v-on:click="addProjectDialog()">Add Existing</button></li>
-          </ul>
-        </div>
+    <div class="layout-transparent mdl-layout mdl-js-layout" id="app" v-cloak v-mdl>
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Dismae <small>v{{uiVersion}}</small></span>
+        <span class="mdl-navigation" v-if="updateMessage != 'Up to Date'">
+          <span class="mdl-navigation__link">{{updateMessage}} <div class="mdl-spinner update mdl-js-spinner is-active" v-if="updateMessage != 'An update has been downloaded and will be installed on quit.'" v-mdl></div></span>
+        </span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" v-on:click="openLink('https://dischan.co/')">Dischan</a>
+          <a class="mdl-navigation__link" v-on:click="openLink('https://github.com/Dischan/dismae')">Source Code / Issues</a>
+        </nav>
       </div>
+      <main class="mdl-layout__content">
+        <div class="content" v-if="!create && !status" transition="switch">
+          <div class="card-square mdl-card mdl-shadow--2dp" v-for="project in projects">
+            <div class="mdl-card__title mdl-card--expand">
+              <h2 class="mdl-card__title-text">{{ project.split('/')[project.split('/').length - 1] }}</h2>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+              <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-mdl v-on:click="startProject(project)">
+                Start
+              </a>
+              <a class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect" v-mdl v-on:click="removeProject($index)">
+                Remove
+              </a>
+            </div>
+          </div>
+          <div class="new-project mdl-card">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" v-on:click="createNew()" v-mdl>
+              <i class="material-icons">add</i>
+            </button>
+          </div>
+        </div>
+        <div v-if="status" transition="switch" style="width: 100%;">
+          <div class="mdl-card mdl-shadow--2dp full-width card-form" style="width: 320px; margin: 80px auto; text-align: center; padding-top: 20px; padding-bottom: 40px;">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text" style="margin: 0 auto">{{status}}</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              <div class="mdl-spinner mdl-js-spinner is-active" v-mdl style="width: 100px; height: 100px;"></div>
+            </div>
+            <div class="mdl-card__supporting-text" v-if="progress">
+              {{Math.round(progress.percentage * 100)}} % <span v-if="progress.speed">@ {{progress.speed | formatBytes}}/s</span>
+              <div v-progress="Math.round(progress.percentage * 100)" class="mdl-progress mdl-js-progress"></div>
+            </div>
+          </div>
+        </div>
+        <div class="content" v-if="create" transition="switch">
+          <div class="mdl-card mdl-shadow--2dp full-width card-form">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text">Add Project</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              Select an empty folder or the root folder of an existing project.
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+              <!-- <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" v-mdl>
+                <input class="mdl-textfield__input" type="text" id="sample3">
+                <label class="mdl-textfield__label" for="sample3">Project Name</label>
+              </div>
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" v-mdl>
+                <textarea class="mdl-textfield__input" type="text" rows= "3" id="sample5"></textarea>
+                <label class="mdl-textfield__label" for="sample5">Project Description</label>
+              </div>
+              <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" v-mdl>
+                Submit
+              </button> -->
+              <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" v-mdl v-on:click="addProjectDialog()">
+                Select Project Location
+              </button>
+              <button class="mdl-button mdl-js-button mdl-button--accent" v-mdl v-on:click="cancelCreate()">
+                Return to Project List
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
+    <script src="node_modules/material-design-lite/material.min.js"></script>
     <script src="node_modules/vue/dist/vue.js"></script>
     <script src="js/app.js"></script>
   </body>

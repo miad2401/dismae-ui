@@ -2,10 +2,40 @@ const electron = require('electron')
 
 var ipc = electron.ipcRenderer
 const dialog = electron.remote.dialog
-var Dismae = require('dismae')
+var Dismae = require('../../dismae')
 var config
 var fs = require('fs')
-var Download = require('download')
+var request = require('request')
+var progress = require('request-progress')
+const shell = electron.shell
+var path = require('path')
+const decompress = require('decompress')
+
+window.Vue.directive('mdl', {
+  bind: function () {
+    window.componentHandler.upgradeElement(this.el)
+  }
+})
+
+window.Vue.directive('progress', function (val) {
+  // The directive may be called before the element have been upgraded
+  if (!this.el.MaterialProgress) {
+    window.componentHandler.upgradeElement(this.el)
+  }
+
+  this.el.MaterialProgress.setProgress(val)
+})
+
+window.Vue.filter('formatBytes', function (value) {
+  value = Number(value)
+  if (value > 1000000) {
+    return Math.round(value / 10000) / 100 + ' MB'
+  } else if (value > 1000) {
+    return Math.round(value / 10) / 100 + ' kB'
+  } else {
+    return value + ' Bytes'
+  }
+})
 
 var app = new window.Vue({
   el: '#app',
@@ -14,9 +44,13 @@ var app = new window.Vue({
     status: null,
     uiVersion: null,
     create: false,
-    updateMessage: null
+    updateMessage: null,
+    progress: null
   },
   methods: {
+    openLink: function openLink (link) {
+      shell.openExternal(link)
+    },
     updateProjectList: function updateProjectList (projects) {
       this.projects = projects
     },
@@ -27,14 +61,6 @@ var app = new window.Vue({
       this.updateMessage = message
     },
     addProject: function addProject (paths) {
-      if (paths) {
-        config.projects.push(paths[0])
-        this.projects = config.projects
-
-        ipc.send('update-config', config)
-      }
-    },
-    createProject: function createProject (paths) {
       function isHiddenFile (file) {
         return !file.startsWith('.')
       }
@@ -48,21 +74,53 @@ var app = new window.Vue({
           } else {
             var nonHiddenFiles = files.filter(isHiddenFile)
             if (nonHiddenFiles.length > 0) {
-              console.log(files)
-            // throw error (must be empty directory)
-            } else {
-              _this.status = 'Downloading and extracting base project...'
-              _this.create = false
-              new Download({mode: '755', extract: true, strip: 1})
-                .get('https://github.com/Dischan/dismae-base/archive/0.0.4.zip')
-                .dest(paths[0])
-                .run(function () {
-                  config.projects.push(paths[0])
-                  _this.projects = config.projects
+              // there's files in it, so assume it's a legit project and check if the config can be loaded
+              var configFile = require(paths[0] + '/config.json')
+              if (configFile) {
+                // it's legit
+                config.projects.push(paths[0])
+                this.projects = config.projects
 
-                  ipc.send('update-config', config)
+                ipc.send('update-config', config)
+                _this.create = false
+              } else {
+                // throw an error
+              }
+            } else {
+              _this.status = 'Downloading base project...'
+              _this.create = false
+              progress(request('https://github.com/Dischan/dismae-base/archive/0.0.5.zip', function () {
+                _this.projects = config.projects
+                _this.status = 'Extracting...'
+                _this.progress = null
+                decompress(path.join(paths[0], 'base.zip'), paths[0], {strip: 1}).then(files => {
                   _this.status = null
+                  fs.unlinkSync(path.join(paths[0], 'base.zip'))
+                  config.projects.push(paths[0])
+                  ipc.send('update-config', config)
                 })
+              }), {throttle: 300})
+              .on('progress', function (state) {
+                // The state is an object that looks like this:
+                // {
+                //     percentage: 0.5,           // Overall percentage (between 0 to 1)
+                //     speed: 554732,             // The download speed in bytes/sec
+                //     size: {
+                //         total: 90044871,       // The total payload size in bytes
+                //         transferred: 27610959  // The transferred payload size in bytes
+                //     },
+                //     time: {
+                //         elapsed: 36.235,      // The total elapsed seconds since the start (3 decimals)
+                //         remaining: 81.403     // The remaining seconds to finish (3 decimals)
+                //     }
+                // }
+                _this.progress = state
+              })
+              .on('error', function (err) {
+                console.log(err)
+                // deal with the error
+              })
+              .pipe(fs.createWriteStream(path.join(paths[0], 'base.zip')))
             }
           }
         })
@@ -84,7 +142,12 @@ var app = new window.Vue({
       delete require.cache[require.resolve(path + '/config.json')]
       var config = require(path + '/config.json')
       var game = new Dismae(config, path)
+      game.on('progress', (event) => {
+        _this.progress = event
+      })
+
       game.on('update', (event) => {
+        _this.progress = null
         switch (event) {
           case 'checking dependencies':
             _this.status = 'Checking dependencies...'
@@ -117,14 +180,6 @@ var app = new window.Vue({
         properties: ['openDirectory', 'createDirectory']
       },
         this.addProject
-      )
-    },
-    createProjectDialog: function createProjectDialog () {
-      dialog.showOpenDialog({
-        title: 'Choose Project Directory',
-        properties: ['openDirectory', 'createDirectory']
-      },
-        this.createProject
       )
     }
   }
