@@ -6,7 +6,7 @@
   "author": "Dischan <dischancontact@gmail.com>",
   "dependencies": {
     "decompress": "^4.0.0",
-    "dismae": "^0.0.15",
+    "dismae": "^0.0.16",
     "material-design-lite": "^1.1.3",
     "request": "^2.72.0",
     "request-progress": "^2.0.1",
