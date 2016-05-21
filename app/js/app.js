@@ -2,7 +2,7 @@ const electron = require('electron')
 
 var ipc = electron.ipcRenderer
 const dialog = electron.remote.dialog
-var Dismae = require('../../dismae')
+var Dismae = require('dismae')
 var config
 var fs = require('fs')
 var request = require('request')
