@@ -1,6 +1,6 @@
 {
   "name": "dismae-ui",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "User interface to help with dismae game development.",
   "scripts": {
     "postinstall": "install-app-deps",
