@@ -45,7 +45,8 @@ var app = new window.Vue({
     uiVersion: null,
     create: false,
     updateMessage: null,
-    progress: null
+    progress: {percentage: 0, speed: 0},
+    path: path
   },
   methods: {
     openLink: function openLink (link) {

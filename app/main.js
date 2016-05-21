@@ -118,7 +118,8 @@ app.on('ready', function () {
     y: 0,
     resizable: true,
     useContentSize: true,
-    show: false
+    show: false,
+    autoHideMenuBar: true
   })
 
   // and load the index.html of the app.
